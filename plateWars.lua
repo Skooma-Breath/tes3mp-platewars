@@ -698,25 +698,15 @@ function plateWars.OnServerPostInitHandler()
 end
 
 function plateWars.OnDeathTimeExpirationHandler(eventStatus, pid)
-    tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "top of OnDeathTimeExpiration")
-    tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "OnDeathTimeExpiration pid: " .. pid)
     -- figure out why this isn't true
     if Players[pid] ~= nil and Players[pid]:IsLoggedIn() then
-        tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "in the if")
 		    tes3mp.LogMessage(2, "++++ Respawning pid: ", pid)
 		    tes3mp.Resurrect(pid, 0)
         -- plateWars.startMatch()
     end
-    tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "bottom of OnDeathTimeExpiration")
 end
 
 function plateWars.OnPlayerDeathHandler(eventStatus, pid)
-    tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "onplayerdeath pid: " .. pid)
-    -- Players[pid].data.mwTDM.status = 0	-- Player is dead and not safe for teleporting
-    -- Players[pid].data.mwTDM.deaths = Players[pid].data.mwTDM.deaths + 1
-    -- Players[pid].data.mwTDM.totalDeaths = Players[pid].data.mwTDM.totalDeaths + 1
-    -- Players[pid].data.mwTDM.spree = 0
-
     if config.bountyResetOnDeath then
         tes3mp.SetBounty(pid, 0)
         tes3mp.SendBounty(pid)
@@ -726,7 +716,6 @@ function plateWars.OnPlayerDeathHandler(eventStatus, pid)
     local deathReason = tes3mp.GetDeathReason(pid)
     if tes3mp.DoesPlayerHavePlayerKiller(pid) then
         local killerpid = tes3mp.GetPlayerKillerPid(pid)
-        tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "inside OnPlayerDeathHandler: " .. tostring(killerpid))
         tes3mp.SetBounty(killerpid, 0)
         tes3mp.SendBounty(killerpid)
         Players[killerpid]:SaveBounty()
@@ -758,10 +747,7 @@ function plateWars.OnPlayerDeathHandler(eventStatus, pid)
 
     tes3mp.SendMessage(pid, color.Yellow .. "Respawning in " .. "5" .. " seconds...\n", false)
   	timer = tes3mp.CreateTimerEx("OnDeathTimeExpiration", time.seconds(5), "is", pid, tes3mp.GetName(pid))
-  	tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "timer was created...")
-
   	tes3mp.StartTimer(timer)
-  	tes3mp.LogAppend(enumerations.log.INFO, "------------------------- " .. "timer was started...")
 end
 
 function plateWars.OnPlayerDisconnectValidator(eventStatus, pid)
